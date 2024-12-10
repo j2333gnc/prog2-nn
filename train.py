@@ -49,6 +49,7 @@ model = models.MyModel()
 acc_test = models.test_accuracy(model, dataloader_test)
 print(f'test accuracy: {acc_test*100:.2f}%')
 
+
 model = models.MyModel()
 
 loss_fn = torch.nn.CrossEntropyLoss()
@@ -60,11 +61,45 @@ models.train(model, dataloader_test, loss_fn, optimizer)
 
 n_epochs = 5
 
+loss_train_history = []
+loss_test_history = []
+acc_train_history = []
+acc_test_history = []
+
 for k in range(n_epochs):
     print(f'epoch {k+1}/{n_epochs}', end=': ', flush=True)
-
-    loss_train = models.train(model, dataloader_train, loss_fn, optimizer)
-    print(f'train loss: {loss_train}')
-    acc_test = models.train(model, dataloader_train)
-    print(f'test accuracy: {acc_test*100:.2f}%')
     
+    time_start = time.time()
+    loss_train = models.train(model, dataloader_train, loss_fn, optimizer)
+    time_end = time.time()
+    loss_train_history.append(loss_test)
+    print(f'train loss: {loss_train:3f} ({time_end-time_start}s)', end=', ')
+
+    loss_test = models.test(model, dataloader_test, loss_fn, optimizer)
+    loss_test_history.append(loss_test)
+    print(f'test loss: {loss_test}')
+
+    acc_train = models.test_accuracy(model, dataloader_train)
+    acc_train_history.append(acc_train)
+    print(f'train accuracy: {acc_train*100:.3f}%')
+
+    acc_test = models.test_accuracy(model, dataloader_test)
+    acc_test_history.append(acc_test)
+    print(f'test accurasy: {acc_test*100:.3f}%')
+
+    
+    plt.plot(acc_train_history, label='train')
+    plt.plot(acc_test_history, label='test')
+    plt.xlabel('epochs')
+    plt.ylabel('accuracy')
+    plt.legend()
+    plt.grid()
+    plt.show()
+
+    plt.plot(loss_train_history, label='train')
+    plt.plot(loss_test_history, label='test')
+    plt.xlabel('epochs')
+    plt.ylabel('accuracy')
+    plt.legend()
+    plt.grid()
+    plt.show()
