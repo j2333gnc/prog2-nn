@@ -1,3 +1,5 @@
+"""ニューラルネットワークの学習"""
+
 import time
 
 import matplotlib.pyplot as plt
